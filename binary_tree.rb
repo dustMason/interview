@@ -25,13 +25,30 @@ module BT
     [height(node.left), height(node.right)].max + 1
   end
 
+  def self.print_in_order node
+    return if node.nil?
+    print_in_order node.left
+    print node.value, " "
+    print_in_order node.right
+  end
+
+  def self.print_post_order node
+    return if node.nil?
+    print_post_order node.left
+    print_post_order node.right
+    print node.value, " "
+  end
+
 end
 
 bt = BT::Node.new(1, BT::Node.new(2, BT::Node.new(4), BT::Node.new(5)), BT::Node.new(3, BT::Node.new(7), BT::Node.new(8)))
 bt2 = BT::Node.new(1, BT::Node.new(2, BT::Node.new(4, BT::Node.new(2, BT::Node.new(3, BT::Node.new(4))), BT::Node.new(5)), BT::Node.new(3, BT::Node.new(7), BT::Node.new(8))))
 
-puts BT::size(bt) #=> 7
-puts BT::height(bt) #=> 3
-
-puts BT::size(bt2) #=> 10
-puts BT::height(bt2) #=> 6
+[bt, bt2].each do |tree|
+  puts BT::size(tree) #=> 7
+  puts BT::height(tree) #=> 3
+  BT::print_in_order tree
+  puts " "
+  BT::print_post_order tree
+  puts " "
+end
