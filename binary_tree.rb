@@ -19,7 +19,7 @@ module BT
     size(node.left) + size(node.right) + 1
   end
 
-  def self.height node, acc=0
+  def self.height node
     return 0 if node.nil?
     return 1 if node.is_leaf?
     [height(node.left), height(node.right)].max + 1
