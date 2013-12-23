@@ -18,9 +18,25 @@ module SLL
     if node.value == value then node.next_node else node end
   end
 
+  # only useful if outside refs to the nodes exist
+  def self.split! node, value
+    return nil if node.nil?
+    node.next_node = nil if node.value == value
+    split! node.next_node, value
+  end
+
+  def self.middle node
+
+  end
+
 end
 
-test_sll_list = SLL::Node.new(1, SLL::Node.new(2, SLL::Node.new(3, SLL::Node.new(4))))
+list = SLL::Node.new(0)
+50.times { |i| list = SLL::insert list, i % 5 }
 
-# puts SLL::insert(test_sll_list, 4).inspect
-puts SLL::delete(test_sll_list, 3).inspect
+# puts SLL::insert(list, 4).inspect
+puts SLL::delete(list, 3).inspect
+
+# SLL::split!(list, 3)
+# puts list.inspect
+# SLL::print_all_nodes
