@@ -45,8 +45,8 @@ bt = BT::Node.new(1, BT::Node.new(2, BT::Node.new(4), BT::Node.new(5)), BT::Node
 bt2 = BT::Node.new(1, BT::Node.new(2, BT::Node.new(4, BT::Node.new(2, BT::Node.new(3, BT::Node.new(4))), BT::Node.new(5)), BT::Node.new(3, BT::Node.new(7), BT::Node.new(8))))
 
 [bt, bt2].each do |tree|
-  puts BT::size(tree) #=> 7
-  puts BT::height(tree) #=> 3
+  puts BT::size tree
+  puts BT::height tree
   BT::print_in_order tree
   puts " "
   BT::print_post_order tree
