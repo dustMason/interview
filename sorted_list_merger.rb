@@ -3,9 +3,9 @@ class Merger
   def self.merge left=[], right=[], acc=[]
     return acc if left.empty? && right.empty?
     if left.first && (right.empty? || left.first <= right.first)
-      merge left[1..-1], right, acc<<left.first
+      merge left[1..-1], right, acc + [left.first]
     else
-      merge left, right[1..-1], acc<<right.first
+      merge left, right[1..-1], acc + [right.first]
     end
   end
 
