@@ -1,34 +1,18 @@
-# a basic breadth-first-search approach.
-
-require 'set'
-
 class Baconizer
+  @@limit = 6
 
-  def initialize movies
-    @movies = movies
-  end
-
-  def bacon_number starting_actor
+  def self.bacon_number actor, movies
+    stack = [actor]
     degrees = 0
-    set = [starting_actor]
-    while degrees < 6
-      next_degree_of_separation = co_stars(*set)
-      break if next_degree_of_separation.include? "kevin" || set == next_degree_of_separation
-      set = next_degree_of_separation
+    while degrees < @@limit
+      return degrees if stack.include? 'kevin'
+      stack = movies.values.select { |actors| !(actors & stack).empty? }.flatten # - stack
       degrees += 1
     end
-    degrees if next_degree_of_separation.include? "kevin"
+    degrees if stack.include? 'kevin'
   end
-
-  def co_stars *actors_to_find
-    set_of_actors = Set.new
-    @movies.delete_if do |movie, actors| 
-      if !(actors & actors_to_find).empty? then set_of_actors += actors else false end
-    end
-    set_of_actors
-  end
-
 end
+
 
 movies = {
   movieA: %w{andy ben candice},
@@ -40,8 +24,6 @@ movies = {
   movieG: %w{sally ted uffie}
 }
 
-%w{ben manny henry sally}.each do |actor|
-  baconizer = Baconizer.new movies.dup
-  puts baconizer.bacon_number actor
-  #=> 4, 0, 2, nil
+%w{ben manny henry sally kevin}.each do |actor|
+  puts Baconizer.bacon_number actor, movies #=> 5, 1, 3, nil, 0
 end
