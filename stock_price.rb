@@ -11,46 +11,20 @@
 
 class Trader
   def initialize prices
+    raise 'prices.size must be > 1' unless prices.size > 1
     @prices = prices
-    @best_trade_val = 0
-    @current_trade = []
   end
   
   def get_max_profit
-    last_price = Float::INFINITY
-    
+    lowest_price = @prices[0]
+    best_trade_val = @prices[1] - @prices[0]
     @prices.each_with_index do |price, i|
-      if price < last_price
-        if open_trade?
-          check_trade
-          @current_trade = []
-        end
-      end
-      
-      if price > last_price
-        if open_trade?
-          @current_trade[1] = price
-        else
-          @current_trade = [last_price, price]
-        end
-        check_trade
-      end
-          
-      last_price = price
+      next if i == 0 # we started with first two
+      current_trade = price - lowest_price
+      best_trade_val = [best_trade_val, current_trade].max
+      lowest_price = [lowest_price, price].min
     end
-    
-    @best_trade_val
-  end
-  
-  def check_trade
-    current_trade_val = @current_trade[1] - @current_trade[0]
-    if current_trade_val > @best_trade_val
-      @best_trade_val = current_trade_val
-    end
-  end
-  
-  def open_trade?
-    !@current_trade.empty?
+    best_trade_val
   end
 end
 
@@ -58,10 +32,14 @@ end
   [10, 7, 5, 8, 11, 9] => 6,
   [6, 16, 1, 14, 5, 2, 0] => 13,
   [6, 16, 1, 14, 5, 2] => 13,
-  [1, 3, 2, 10] => 8,
+  [6, 16, 1, 2, 3, 4, 5, 6, 14, 5] => 13,
+  [1, 3, 2, 10] => 9,
+  [3, 2, 3, 1, 5, 3, 10] => 9,
   [0, 0] => 0,
-  [] => 0,
-  [1000, 999, 998] => 0
+  [1000, 1000, 1000, 999, 998] => 0,
+  [1000, 999, 998] => -1,
+  [1000, 900, 998] => 98,
+  [1000, 900, 800] => -100,
 }.each do |input, output|
   t = Trader.new input
   result = t.get_max_profit
