@@ -5,7 +5,7 @@ class WordCloud
     lowercase_next = false
     str.each_codepoint.each_with_index do |cp, i|
       if is_alphanumeric cp
-        if (lowercase_next || i == 0) && is_cap(cp)
+        if (lowercase_next || i == 0) && is(cp, :capital)
           cp += 32 
           lowercase_next = false
         end
@@ -16,23 +16,24 @@ class WordCloud
         cloud[word] += 1
         chars = []
       end
-      lowercase_next = is_period cp
+      lowercase_next = is(cp, :period)
     end
     cloud
   end
   
   private
   
+  def self.is char, type
+    { digit: (48..57),
+      capital: (65..90),
+      lowercase: (97..122),
+      period: (46..46),
+      hyphen: (45..45)
+    }[type].include? char
+  end
+  
   def self.is_alphanumeric c
-    (c >= 47 && c <= 57) || is_cap(c) || (c >= 97 && c <= 122) || (c == 45)
-  end
-
-  def self.is_cap c
-    c >= 65 && c <= 90
-  end
-
-  def self.is_period c
-    c == 46
+    is(c, :digit) || is(c, :capital) || is(c, :lowercase) || is(c, :hyphen)
   end
 end
 
