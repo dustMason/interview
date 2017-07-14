@@ -19,7 +19,6 @@ class Checker
     elsif haystack[middle] > needle
       return check(needle, haystack[0...middle])
     end
-    
   end
 end
 
