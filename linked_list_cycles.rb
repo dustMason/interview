@@ -12,6 +12,8 @@
 # Write a function contains_cycle() that takes the first node in a singly-linked
 # list and returns a boolean indicating whether the list contains a cycle.
 
+require 'set'
+
 class LinkedListNode
   attr_accessor :value, :next
   def initialize(value)
@@ -20,17 +22,34 @@ class LinkedListNode
   end
 end
 
+# O(n) time and space
 def contains_cycle node
   _node = node
   cycle = false
-  mem = 0
-  until cycle || _node.nil? do
-    if mem ^ _node.object_id == 0
+  ids = Set.new
+  until _node.nil? do
+    if ids.include?(_node.object_id)
       cycle = true
+      break
     else
-      mem ^= _node.object_id
+      ids.add _node.object_id
     end
     _node = _node.next
+  end
+  cycle
+end
+
+# O(n) time, O(1) space
+def contains_cycle2 node
+  hare = tortoise = node
+  cycle = false
+  until hare.next.nil? do
+    hare = hare.next.next
+    tortoise = tortoise.next
+    if hare == tortoise
+      cycle = true
+      break
+    end
   end
   cycle
 end
@@ -40,14 +59,19 @@ end
   [%w{a b c d e f g}, [0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6]] => false,
   [%w{a b c d e f g}, [0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 0, 3]] => false,
   [%w{a b c d e f g}, [0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 3, 0]] => true,
+  [%w{a b c d e f g}, [0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 3, 1]] => true,
   [%w{a b c}, [0, 1, 1, 2, 2, 0]] => true,
 }.each do |input, output|
   nodes = input[0].map { |v| LinkedListNode.new(v) }
   input[1].each_slice(2) { |l, r| nodes[l].next = nodes[r] }
-  result = contains_cycle nodes[0]
-  if result == output
-    puts "PASS"
-  else
-    puts "FAIL given #{input.join(' ')}, expected #{output} but got #{result}"
+  [
+    contains_cycle(nodes[0]),
+    contains_cycle2(nodes[0]),
+  ].each do |result|
+    if result == output
+      puts "PASS"
+    else
+      puts "FAIL given #{input.join(' ')}, expected #{output} but got #{result}"
+    end
   end
 end
