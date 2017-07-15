@@ -12,8 +12,6 @@
 # Write a function contains_cycle() that takes the first node in a singly-linked
 # list and returns a boolean indicating whether the list contains a cycle.
 
-require 'set'
-
 class LinkedListNode
   attr_accessor :value, :next
   def initialize(value)
@@ -25,12 +23,12 @@ end
 def contains_cycle node
   _node = node
   cycle = false
-  ids = Set.new
+  mem = 0
   until cycle || _node.nil? do
-    if ids.include?(_node.object_id)
+    if mem ^ _node.object_id == 0
       cycle = true
     else
-      ids.add _node.object_id
+      mem ^= _node.object_id
     end
     _node = _node.next
   end
