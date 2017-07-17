@@ -1,6 +1,5 @@
-def reverse input
-  return input unless input.size > 0
-  str = input.dup
+def reverse str
+  return str unless str.size > 0
   len = str.size
   (len/2).times do |i|
     char = str[len-1-i]
@@ -16,7 +15,7 @@ end
   "" => "",
   "whatever" => "revetahw",
 }.each do |input, output|
-  result = reverse input
+  result = reverse input.dup
   if result == output
     puts "pass"
   else
