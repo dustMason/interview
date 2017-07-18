@@ -7,25 +7,26 @@ class DoubleFinder
     if numbers.empty?
       return nil
     end
-    sum = 0
-    numbers.each_with_index do |n, i|
-      len = i+1
-      expected_sum = (len * (len+1)) / 2
-      sum += n
-      if sum != expected_sum
-        return n
-      end
+    sum = numbers.reduce &:+
+    if sum == (numbers.size * (numbers.size+1)) / 2
+      # there are no doubles, the sum indicates there is one of each number
+      return nil
+    else
+      # without the one double, the sum would be against 1..n
+      return sum - (((numbers.size-1) * numbers.size) / 2)
     end
-    return nil
+    
   end
 end
-
 
 {
   [1, 1, 2, 3, 4] => 1,
   [1, 2, 2, 3, 4] => 2,
   [1, 2, 3, 3, 4] => 3,
   [1, 2, 3, 4, 4] => 4,
+  [4, 5, 5, 3, 2, 1] => 5,
+  [5, 4, 3, 2, 1, 1] => 1,
+  [6, 6, 5, 4, 3, 2, 1].shuffle => 6,
   [] => nil,
   [1] => nil,
   [1, 2, 3, 4, 5, 6] => nil,
@@ -38,5 +39,6 @@ end
     puts "GIVEN      #{input}"
     puts "EXPECTED   #{output}"
     puts "GOT        #{result}"
+    puts "-"*80
   end
 end
