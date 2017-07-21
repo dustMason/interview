@@ -1,9 +1,12 @@
-require 'colorize'
 require 'io/console'
 
 class Minesweeper
+  attr_reader :playing
+  
   MINE = -1
-  attr_reader :alive
+  MOVES = [-1, 0, 1].repeated_combination(2).to_a.flat_map do |a|
+    a.permutation.to_a 
+  end.uniq - [[0, 0]]
   
   def initialize size=6, mines=20
     @size = size
@@ -35,8 +38,10 @@ class Minesweeper
     # init the game state
     @cursor = 0
     @uncovered = []
+    @covered_count = @size**2
+    @flags = []
     @moves = 0
-    @alive = true
+    @playing = true
     display
   end
   
@@ -45,12 +50,24 @@ class Minesweeper
     @moves += 1
     if @board[index] == MINE
       @uncovered[index] = true
-      @alive = false
       puts "BOOM!"
+      @playing = false
     elsif !@uncovered[index]
       @uncovered[index] = true
+      @covered_count -= 1
       breadth_first_search(index) if @board[index] == 0
+      display
+      if @covered_count == @mines
+        puts "YOU WIN!"
+        @playing = false
+      end
     end
+  end
+  
+  def flag index=nil
+    index ||= @cursor
+    @moves += 1
+    @flags[index] = !@flags[index]
     display
   end
   
@@ -69,6 +86,7 @@ class Minesweeper
   end
   
   def move x, y
+    @moves += 1
     dest = relative(@cursor, x, y)
     @cursor = dest if dest
     display
@@ -76,28 +94,35 @@ class Minesweeper
   
   private
   
+  # this recursive BFS is nice and simple, but can't handle large grids because
+  # the stack level gets too deep.
   def breadth_first_search source_index
     neighbors = neighboring_square_indices source_index
     neighbors.each do |neighbor| 
       if @board[neighbor] != MINE && !@uncovered[neighbor]
         @uncovered[neighbor] = true
+        @covered_count -= 1
         breadth_first_search(neighbor) if @board[neighbor] == 0
       end
     end
   end
   
   def square_to_s index
-    str = if @uncovered[index]
-      if @board[index] == MINE then "•" else @board[index].to_s end
+    if @cursor == index
+      "🙋"
+    elsif @flags[index]
+        "⛳"
+    elsif @uncovered[index]
+      if @board[index] == MINE 
+        "💣"
+      elsif @board[index] == 0
+        "·"
+      else
+        @board[index].to_s
+      end
     else
-      "-"
+      "▧"
     end
-    if index == @cursor
-      str = str.colorize(color: :black, background: :light_blue)
-    elsif str != '-' && str != '0'
-      str = str.colorize(color: :red)
-    end
-    str
   end
   
   def random_square
@@ -116,15 +141,13 @@ class Minesweeper
   end
   
   def neighboring_square_indices index
-    # all adjacent 'legal' squares
-    moves = [-1, 0, 1].repeated_combination(2).to_a.flat_map { |a| a.permutation.to_a }.uniq - [[0, 0]]
-    moves.map { |x, y| relative index, x, y }.compact
+    MOVES.map { |x, y| relative index, x, y }.compact
   end
 end
 
-game = Minesweeper.new(60, 90)
+game = Minesweeper.new(10, 2)
 game.start!
-while game.alive do
+while game.playing do
   dir = STDIN.getch
   if dir == 'w'
     game.move 0, -1
@@ -134,8 +157,10 @@ while game.alive do
     game.move 0, 1
   elsif dir == 'd'
     game.move 1, 0
-  elsif dir == 'u'
+  elsif dir.ord == 13 # return
     game.touch
+  elsif dir.ord == 32
+    game.flag
   elsif dir == 'q'
     exit
   end
