@@ -145,7 +145,7 @@ class Minesweeper
   end
 end
 
-game = Minesweeper.new(10, 2)
+game = Minesweeper.new(40, 100)
 game.start!
 while game.playing do
   dir = STDIN.getch
