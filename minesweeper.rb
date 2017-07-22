@@ -17,7 +17,8 @@ class Minesweeper
     @board = Array.new(@size**2)
     @board.fill 0
     
-    # place the mines randomly
+    # place the mines randomly. this algorithm ensures random placement but could
+    # have horrible running time, especially with large values for @mines
     @mines.times do
       mine = random_square
       mine = random_square until @board[mine] == 0
@@ -58,7 +59,7 @@ class Minesweeper
       breadth_first_search(index) if @board[index] == 0
       display
       if @covered_count == @mines
-        puts "YOU WIN!"
+        puts "YOU WIN! #{@moves} moves"
         @playing = false
       end
     end
@@ -66,7 +67,6 @@ class Minesweeper
   
   def flag index=nil
     index ||= @cursor
-    @moves += 1
     @flags[index] = !@flags[index]
     display
   end
@@ -86,7 +86,6 @@ class Minesweeper
   end
   
   def move x, y
-    @moves += 1
     dest = relative(@cursor, x, y)
     @cursor = dest if dest
     display
@@ -94,15 +93,14 @@ class Minesweeper
   
   private
   
-  # this recursive BFS is nice and simple, but can't handle large grids because
-  # the stack level gets too deep.
   def breadth_first_search source_index
     neighbors = neighboring_square_indices source_index
-    neighbors.each do |neighbor| 
+    until neighbors.empty? do
+      neighbor = neighbors.pop
       if @board[neighbor] != MINE && !@uncovered[neighbor]
-        @uncovered[neighbor] = true
+        neighbors += neighboring_square_indices(neighbor) if @board[neighbor] == 0
         @covered_count -= 1
-        breadth_first_search(neighbor) if @board[neighbor] == 0
+        @uncovered[neighbor] = true
       end
     end
   end
@@ -145,7 +143,7 @@ class Minesweeper
   end
 end
 
-game = Minesweeper.new(40, 100)
+game = Minesweeper.new(60, 100)
 game.start!
 while game.playing do
   dir = STDIN.getch
