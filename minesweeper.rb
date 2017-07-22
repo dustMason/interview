@@ -17,13 +17,8 @@ class Minesweeper
     @board = Array.new(@size**2)
     @board.fill 0
     
-    # place the mines randomly. this algorithm ensures random placement but could
-    # have horrible running time, especially with large values for @mines
-    @mines.times do
-      mine = random_square
-      mine = random_square until @board[mine] == 0
-      @board[mine] = MINE
-    end
+    # TIL that Array#sample ensures non-repeating random elements
+    (0..(@size**2)).to_a.sample(@mines).each { |i| @board[i] = MINE }
     
     # calculate the adjacency counts for each square
     @board = @board.map.with_index do |s, i|
