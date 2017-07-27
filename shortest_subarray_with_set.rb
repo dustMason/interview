@@ -1,29 +1,34 @@
 require 'set'
 
 def shortest_subarray_with set, arr
-  
   window_start = 0
   empty_hash = Hash[set.to_a.zip(Array.new(set.size, 0))]
   shortest = nil
   
   until window_start == arr.size do
     counts = empty_hash.dup
+    seen = Set.new
     _start = 0
     _end = 0
     
     arr[window_start..-1].each_with_index do |a, i|
-      counts[a] += 1 if counts.has_key? a
-      if counts.values.all? { |v| v > 0 }
-        _end = i + window_start
-        break
+      if counts.has_key? a
+        counts[a] += 1
+        seen.add a
+        if seen.size == set.size
+          _end = i + window_start
+          break
+        end
       end
     end
     
     arr[window_start.._end].each_with_index do |a, i|
-      counts[a] -= 1 if counts.has_key? a
-      if counts.values.any? { |v| v == 0 }
-        _start = i + window_start
-        break
+      if counts.has_key? a
+        counts[a] -= 1
+        if counts[a] == 0
+          _start = i + window_start
+          break
+        end
       end
     end
     
@@ -37,7 +42,6 @@ def shortest_subarray_with set, arr
   end
   
   shortest
-  
 end
 
 {
