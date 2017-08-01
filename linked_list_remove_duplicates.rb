@@ -50,5 +50,6 @@ end
     puts "pass"
   else
     puts "fail"
+    puts "given #{input} expected #{output} got #{result}"
   end
 end
