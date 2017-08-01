@@ -1,6 +1,4 @@
 class Solution
-  
-  
   def self.subarray a, k
     
     return [] if a.empty?
@@ -33,9 +31,18 @@ class Solution
     end
     
   end
-  
 end
 
-puts Solution.subarray([-3,-2,3,7,9,10], 1), "="*80
-puts Solution.subarray([1,2,3,4,5], 9), "="*80
-puts Solution.subarray([1,1,1,1,1,1,5,6,7,8,2,-100,-30,-5,-4], -130), "="*80
+{
+  [[-3,-2,3,7,9,10], 1] => [-2, 3],
+  [[1,2,3,4,5], 9] => [2, 3, 4],
+  [[1,1,1,1,1,1,5,6,7,8,2,-100,-30,-5,-4], -130] => [-100, -30],
+}.each do |inputs, output|
+  result = Solution.subarray inputs[0], inputs[1]
+  if result == output
+    puts "pass"
+  else
+    puts "fail"
+    puts "given #{inputs} expected #{output} got #{result}"
+  end
+end
