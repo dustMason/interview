@@ -23,7 +23,7 @@ def find_median_sorted arr1, arr2
   end
   
   if arr2.empty? # just return the median of arr1
-    return arr1[(arr1.size-1)/2] + arr1[arr1.size/2] / 2.0
+    return (arr1[(arr1.size-1)/2] + arr1[arr1.size/2]) / 2.0
   end
   
   # binary search for the correct place to "cut" the two arrays, then get median of
@@ -51,7 +51,8 @@ end
 
 {
   [[1, 3], [2]] => 2,
-  [[1, 2], [3, 4]] => 2.5
+  [[1, 2], [3, 4]] => 2.5,
+  [[], [1]] => 1
 }.each do |input, output|
   [
     find_median_sorted_quicksort(input[0], input[1]),
