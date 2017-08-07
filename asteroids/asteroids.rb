@@ -19,6 +19,7 @@ class Asteroids
     # remove asteroids that are off the board
     @asteroids = @asteroids.select { |a| in_bounds?(a.pos[0], a.pos[1]) }
     # if any @bullets collide with asteroids, remove them (TODO break them)
+    # TODO increase score for each one, once per asteroid. remove the bullet.
     @asteroids = @asteroids.select { |a| @bullets.none? { |b| a.collides_with? b } }
     # make the ship wrap around the board
     @ship.pos[0] = 0 if @ship.pos[0] > @width
