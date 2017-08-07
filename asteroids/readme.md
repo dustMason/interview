@@ -2,7 +2,7 @@
 
 'roids in the terminal, for fun and practice.
 
-[![asciicast](https://asciinema.org/a/pQW1YaWq0O27kvp0R4SexP4gc.png)](https://asciinema.org/a/pQW1YaWq0O27kvp0R4SexP4gc)
+[![asciicast](https://asciinema.org/a/iMXfd8RTjdkqMrWVcwp2pZN3e.png)](https://asciinema.org/a/iMXfd8RTjdkqMrWVcwp2pZN3e)
 
 ## Playing
 
