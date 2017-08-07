@@ -13,6 +13,7 @@ class Asteroids
     @score = 0
     @playing = true
     @can_fire = true
+    @prev_board = ''
   end
   
   def tick
@@ -45,12 +46,16 @@ class Asteroids
         end
       end
     end
-    system 'clear'
+    new_board = ''
     board.each do |row|
-      row.each { |col| print col || " " }
-      print "\n"
+      new_board << row.map { |col| col || " " }.join
+      new_board << "\n"
     end
-    print "\n"
+    if new_board != @prev_board
+      system 'clear'
+      puts new_board
+      @prev_board = new_board
+    end
   end
   
   def turn direction=1
