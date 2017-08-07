@@ -39,10 +39,11 @@ explores all possible states it is guaranteed to play perfectly.
 Another successful AI strategy exists that could power an optimized algorithm.
 It should follow these simple rules:
 
-- If there's a move that results in a win, take it Else if there's a move that
-- prevents the opponent from immediately winning, take it Else if the center
-- square is open, take it Else if any corner squares are open, take one of them
-- at random Else take an available edge square at random
+- If there's a move that results in a win, take it 
+- Else if there's a move that prevents the opponent from immediately winning, take it
+- Else if the center square is open, take it
+- Else if any corner squares are open, take one of them at random
+- Else take an available edge square at random
 
 ## Problem Space
 
