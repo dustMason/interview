@@ -15,9 +15,7 @@ class Minesweeper
   
   # A static list of 8 movements relative to any given tile (up, down, left,
   # right and 4 diagonals).
-  MOVES = [-1, 0, 1].repeated_combination(2).to_a.flat_map do |a|
-    a.permutation.to_a 
-  end.uniq - [[0, 0]]
+  MOVES = [[0, 1], [1, 0], [-1, 0], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1]]
   
   # size = width and height of square game board
   # mines = number of mines to randomly place within the board
