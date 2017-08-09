@@ -1,6 +1,8 @@
 # srand 12345
 
 require 'io/console'
+require 'curses'
+
 require './map'
 require "./player"
 require "./character"
@@ -11,9 +13,10 @@ module Roguelike
   DOOR = -1
   OPEN = 0
   TREASURE = 1
-  STAIRS = -3
-  START = -4
+  STAIRS = 2
+  START = 3
   DEBUG = -100
+  HIDDEN = -3
   
   NEIGHBORS = [[0, 1], [0, -1], [1, 0], [-1, 0], [1, 1], [-1, 1], [1, -1], [-1, -1]]
   
@@ -29,13 +32,22 @@ module Roguelike
       @map.enter *@player.pos
       @characters = {}
       generate_characters!
+      init_curses!
+      redraw
       @playing = true
-      display
     end
     
-    def display
-      system 'clear'
+    def init_curses!
+      Curses.init_screen
+      Curses.nonl
+      Curses.cbreak
+      Curses.noecho
+      @screen = Curses.stdscr
+    end
+    
+    def redraw
       out = ''
+      @screen.clear
       @map.each_tile do |y, x, tile, revealed, end_of_row|
         if revealed
           if @characters[[y, x]]
@@ -46,7 +58,7 @@ module Roguelike
             out << tile_to_s(tile)
           end
         else
-          out << ","
+          out << tile_to_s(HIDDEN)
         end
         out << " "
         out << "\n" if end_of_row
@@ -58,7 +70,8 @@ module Roguelike
       out << "\n"
       out << @status_message if @status_message
       out << "\n"
-      puts out
+      @screen.addstr out
+      @screen.refresh
     end
     
     def move y, x
@@ -66,10 +79,10 @@ module Roguelike
       if @characters[new_pos]
         @status_message = @player / @characters[new_pos] # fight!!!
         @characters.delete(new_pos) if @characters[new_pos].life <= 0
-        display
+        redraw
       elsif @map.enter *new_pos
         @player.pos = new_pos
-        display
+        redraw
       end
       if @player.life <= 0
         @playing = false # GAME OVER
@@ -85,13 +98,14 @@ module Roguelike
     
     def tile_to_s tile
       {
-        WALL => "▧",
-        DOOR => "O",
+        WALL => "▩",
+        DOOR => "🚪",
         OPEN => " ",
         TREASURE => "$",
         STAIRS => "=",
         START => "^",
-        DEBUG => "."
+        DEBUG => ".",
+        HIDDEN => '`'
       }[tile] || ' '
     end
   end
