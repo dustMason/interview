@@ -46,10 +46,8 @@ class TicTacToe
         board[i] = @marks[player_index] if c == 1
       end
     end
-    rows = board.each_slice(3).map { |r| r.join ' | ' }
-    puts rows.join "\n--+---+--\n"
-    puts
-    puts "It's #{@players[@turn]}'s turn (#{@marks[@turn]})"
+    puts board.each_slice(3).map { |r| r.join ' | ' }.join "\n--+---+--\n"
+    puts "\nIt's #{@players[@turn]}'s turn (#{@marks[@turn]})"
   end
   
   def winner
