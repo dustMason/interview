@@ -15,7 +15,7 @@
 
 class Machine
   def self.changings amount, denominations
-    changings = Array.new(amount+1) { |_| 0 }
+    changings = Array.new(amount+1, 0)
     changings[0] = 1
     denominations.each do |coin|
       max = coin

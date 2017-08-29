@@ -19,7 +19,7 @@ class Validator
     closers = [')', '}', ']']
     opens = []
     depth = 0
-    code.each_char.with_index do |char, i|
+    code.each_char.with_index do |char|
       o = openers.find_index char
       if o
         opens << o
